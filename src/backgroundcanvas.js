@@ -1,26 +1,49 @@
+/**
+ * @constructor
+ * Boilerplate for a full-screen HTML5 Canvas
+ *
+ * @param {object} el
+ *   [Required] <canvas></canvas> target element
+ *
+ * @param {function} renderFunction
+ *   [Optional] initializes and executes rendering function
+ */
 function BackgroundCanvas(el, renderFunction) {
 
+  /**
+   * @public
+   */
   this.canvas = el;
   this.context = el.getContext('2d');
-  this.animated = false;
 
+  /**
+   * @private
+   */
+  this._animating = false;
   this._x = null;
   this._y = null;
   this._scale = window.devicePixelRatio;
 
-  var render;
-  if(typeof renderFunction === "function") {
-    render = renderFunction;
-  } else {
-    render = () => {};
-  }
+  /**
+   * @public @method
+   * Defines rendering function
+   */
   this.setRenderFunction = (renderFunction) => {
     render = renderFunction;
   };
+
+  /**
+   * @public @method
+   * Executes rendering function
+   */
   this.runRenderFunction = () => {
     render.bind(this)();
   }
 
+  /**
+   * @private @method
+   * Resize canvas to current window dimesions
+   */
   var resize = () => {
     let height = window.innerHeight;
     let width = window.innerWidth;
@@ -30,6 +53,17 @@ function BackgroundCanvas(el, renderFunction) {
     this.canvas.style.height = height + 'px';
     this.runRenderFunction();
   };
-  resize();
-  window.addEventListener('resize', resize, false);
+
+  /**
+   * @main
+   * Initialize the view
+   */
+   var render;
+   if(typeof renderFunction === "function") {
+     render = renderFunction;
+   } else {
+     render = () => {};
+   }
+   resize();
+   window.addEventListener('resize', resize, false);
 }
