@@ -4,30 +4,31 @@ function BackgroundCanvas(el, renderFunction) {
   this.context = el.getContext('2d');
   this.animated = false;
 
-  let x, y, scale = window.devicePixelRatio;
+  this._x = null;
+  this._y = null;
+  this._scale = window.devicePixelRatio;
 
-  let render;
+  var render;
   if(typeof renderFunction === "function") {
     render = renderFunction;
-    render();
   } else {
     render = () => {};
   }
   this.setRenderFunction = (renderFunction) => {
     render = renderFunction;
   };
-  this.runRenderFunction = (callback) => {
-    render();
+  this.runRenderFunction = () => {
+    render.bind(this)();
   }
 
-  let resize = () => {
+  var resize = () => {
     let height = window.innerHeight;
     let width = window.innerWidth;
-    x = this.canvas.width = width * scale;
-    y = this.canvas.height = height * scale;
+    this._x = this.canvas.width = width * this._scale;
+    this._y = this.canvas.height = height * this._scale;
     this.canvas.style.width = width + 'px';
     this.canvas.style.height = height + 'px';
-    render();
+    this.runRenderFunction();
   };
   resize();
   window.addEventListener('resize', resize, false);
